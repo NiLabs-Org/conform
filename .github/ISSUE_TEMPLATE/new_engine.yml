@@ -1,0 +1,34 @@
+name: Engine support
+description: Request or offer support for an inference engine.
+title: "adapter: "
+labels: ["adapter"]
+body:
+  - type: input
+    id: engine
+    attributes:
+      label: Engine
+      placeholder: "SGLang"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: api
+    attributes:
+      label: Does it expose an OpenAI-compatible /v1/completions?
+      description: If yes, this needs no code, only a conform.toml block.
+      options: ["Yes", "No", "Partially", "Unsure"]
+    validations:
+      required: true
+
+  - type: textarea
+    id: run
+    attributes:
+      label: How to start it locally
+      render: shell
+
+  - type: input
+    id: cpu
+    attributes:
+      label: Does it run on CPU?
+      description: CPU support means contributors without a GPU can test it.
+      placeholder: "Yes, with --device cpu"

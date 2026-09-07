@@ -1,0 +1,6 @@
+# Default owner for everything.
+*                       @natedemoss
+
+# The reference defines what "correct" means, so changes there need a look.
+/src/conform/adapters/reference.py   @natedemoss
+/docs/spec.md                        @natedemoss

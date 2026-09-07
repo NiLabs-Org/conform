@@ -1,0 +1,78 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "conform"
+version = "0.1.0.dev0"
+description = "A conformance suite for LLM inference engines."
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.11"
+keywords = ["llm", "inference", "conformance", "testing", "vllm", "llama.cpp"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Testing",
+]
+dependencies = [
+  "httpx>=0.27",
+  "pytest>=8.0",
+]
+
+[project.optional-dependencies]
+# The reference oracle. Heavy, and only needed if you run `kind = "reference"`.
+reference = [
+  "torch>=2.4",
+  "transformers>=4.44",
+]
+dev = [
+  "mypy>=1.11",
+  "ruff>=0.6",
+]
+
+[project.scripts]
+conform = "conform.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/NiLabs-Models/conform"
+Issues = "https://github.com/NiLabs-Models/conform/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/conform"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --strict-config"
+markers = [
+  "requires(capability): skip unless the engine declares this capability",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "SIM", "RUF", "PTH", "SLF"]
+ignore = [
+  # Assertions are the entire point of a test suite.
+  "B011",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["SLF"]
+
+[tool.mypy]
+python_version = "3.11"
+files = ["src"]
+strict = true
+warn_unreachable = true
+
+[[tool.mypy.overrides]]
+module = ["transformers.*", "torch.*"]
+ignore_missing_imports = true

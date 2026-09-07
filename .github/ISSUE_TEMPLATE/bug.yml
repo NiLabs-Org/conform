@@ -1,0 +1,33 @@
+name: Bug in the suite
+description: The harness itself is broken.
+title: "fix: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For an engine behaving differently, use the divergence report instead.
+        A failing conformance test is usually a finding, not a bug.
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      placeholder: "conform commit, Python version, OS"
+    validations:
+      required: true

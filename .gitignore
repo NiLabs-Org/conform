@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local engine config: ports and models are per-machine.
+conform.toml
+
+# Generated matrices.
+results/
+
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

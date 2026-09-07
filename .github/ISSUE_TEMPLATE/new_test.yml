@@ -1,0 +1,37 @@
+name: Test proposal
+description: Propose a behaviour the suite should check.
+title: "test: "
+labels: ["test"]
+body:
+  - type: textarea
+    id: behaviour
+    attributes:
+      label: The behaviour
+      description: What should be true of every conforming engine?
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why an engine would get this wrong
+      description: |
+        The most important field. What implementation detail makes this
+        plausible to break? This becomes the test's docstring.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: tier
+    attributes:
+      label: Tier
+      description: See docs/spec.md.
+      options: ["Specified", "Implied", "Unspecified", "Unsure"]
+    validations:
+      required: true
+
+  - type: input
+    id: capability
+    attributes:
+      label: Required capability, if any
+      placeholder: "logprobs"

@@ -1,0 +1,42 @@
+# Copy this to conform.toml and edit. conform.toml is gitignored, so your
+# local ports and model names stay yours.
+#
+#   kind = "reference"  loads the model in-process with transformers on CPU.
+#                       Slow, no server needed, and treated as ground truth.
+#   kind = "openai"     talks to any OpenAI-compatible /v1/completions server.
+#
+# capabilities is optional. Omit it to accept the adapter's defaults; set it
+# explicitly to tell the suite what a server really supports, so unsupported
+# features are skipped instead of reported as failures.
+
+[[engines]]
+name = "reference"
+kind = "reference"
+model = "HuggingFaceTB/SmolLM2-135M-Instruct"
+
+[[engines]]
+name = "ollama"
+kind = "openai"
+base_url = "http://localhost:11434"
+model = "qwen2.5:0.5b"
+capabilities = ["stop_sequences"]
+
+# vLLM's CPU backend. Start it with:
+#   vllm serve Qwen/Qwen2.5-0.5B-Instruct --device cpu --port 8000
+[[engines]]
+name = "vllm-cpu"
+kind = "openai"
+base_url = "http://localhost:8000"
+model = "Qwen/Qwen2.5-0.5B-Instruct"
+capabilities = ["stop_sequences", "logprobs", "top_k", "tokenize"]
+enabled = false
+
+# llama.cpp's built-in server:
+#   llama-server -m model.gguf --port 8080
+[[engines]]
+name = "llama-cpp"
+kind = "openai"
+base_url = "http://localhost:8080"
+model = "local"
+capabilities = ["stop_sequences", "logprobs", "top_k"]
+enabled = false

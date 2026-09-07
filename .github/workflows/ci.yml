@@ -1,0 +1,119 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: lint and types
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install
+        run: pip install -e ".[dev]"
+
+      - run: ruff format --check .
+      - run: ruff check --output-format=github .
+      - run: mypy
+
+  harness:
+    name: harness (py${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+
+      - name: Install
+        run: pip install -e ".[dev]"
+
+      # Self-tests run against a stub server, so they need no engine, no
+      # model and no network. These MUST pass: they are what proves the suite
+      # still detects a known-wrong implementation.
+      - name: Harness self-tests
+        run: pytest tests/harness -v
+
+      - name: Collect
+        run: pytest --collect-only -q
+
+      # No engines configured, so every conformance test should skip rather
+      # than fail. That is the state a new contributor first sees.
+      - name: Run with no engines configured
+        run: pytest -p conform.report --conform-out=results
+
+      - name: CLI smoke test
+        run: |
+          conform --version
+          cp conform.example.toml conform.toml
+          conform engines
+
+  conformance:
+    name: conformance vs ollama
+    runs-on: ubuntu-latest
+    # Pulls a model over the network, so it does not gate pull requests.
+    if: github.event_name != 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install
+        run: pip install -e ".[dev]"
+
+      - name: Start Ollama
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          ollama serve &
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:11434/api/tags >/dev/null && break
+            sleep 1
+          done
+          ollama pull qwen2.5:0.5b
+
+      - name: Configure
+        run: |
+          cat > conform.toml <<'EOF'
+          [[engines]]
+          name = "ollama"
+          kind = "openai"
+          base_url = "http://localhost:11434"
+          model = "qwen2.5:0.5b"
+          capabilities = ["stop_sequences"]
+          EOF
+
+      # A divergence is a finding, not a broken build. The matrix is the
+      # artifact; a red X here would only teach people to ignore it.
+      - name: Run suite
+        continue-on-error: true
+        run: conform run --out results
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: conformance-matrix
+          path: results/

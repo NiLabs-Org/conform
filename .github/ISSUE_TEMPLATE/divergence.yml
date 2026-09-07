@@ -1,0 +1,77 @@
+name: Divergence report
+description: Two engines produced different output for identical input.
+title: "divergence: "
+labels: ["divergence"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is the most valuable kind of issue here. Please be exact:
+        paste real output rather than describing it.
+
+  - type: textarea
+    id: request
+    attributes:
+      label: The request
+      description: Exact request, as JSON. Include every sampling parameter you set.
+      render: json
+      placeholder: |
+        {
+          "prompt": "Letters: a b c d",
+          "max_tokens": 32,
+          "temperature": 0,
+          "stop": ["c"]
+        }
+    validations:
+      required: true
+
+  - type: textarea
+    id: outputs
+    attributes:
+      label: What each engine returned
+      description: Verbatim output per engine. Do not paraphrase or trim whitespace.
+      render: text
+      placeholder: |
+        vllm 0.11.2   -> "Letters: a b "
+        ollama 0.6.4  -> "Letters: a b c"
+    validations:
+      required: true
+
+  - type: input
+    id: model
+    attributes:
+      label: Model and quantisation
+      placeholder: "Qwen/Qwen2.5-0.5B-Instruct, fp16 (vllm) vs Q4_K_M (ollama)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: tier
+    attributes:
+      label: Is this specified behaviour?
+      description: See docs/spec.md. Unsure is a fine answer.
+      options:
+        - "Specified: the API documents this and one engine is wrong"
+        - "Implied: not documented but only one answer is defensible"
+        - "Unspecified: engines legitimately differ"
+        - "Unsure"
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Which behaviour is correct, and why
+      description: Link the documentation or specification if there is one.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: Both engines ran the same model architecture
+          required: true
+        - label: I used temperature 0, or a fixed seed
+          required: true
+        - label: I included exact engine versions
+          required: true
