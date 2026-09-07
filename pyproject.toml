@@ -27,7 +27,7 @@ dependencies = [
 [project.optional-dependencies]
 # The reference oracle. Heavy, and only needed if you run `kind = "reference"`.
 reference = [
-  "torch>=2.4",
+  "torch>=2.14.0",
   "transformers>=4.44",
 ]
 dev = [
