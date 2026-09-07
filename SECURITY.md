@@ -30,7 +30,7 @@ Please do not open a public issue for a security report.
 
 Use GitHub's [private vulnerability
 reporting](https://github.com/NiLabs-Models/conform/security/advisories/new),
-or email **security@nilabs.dev**.
+or email **hello@nilabs.dev**.
 
 Include the version or commit, what an attacker can achieve, and a reproduction
 if you have one.
