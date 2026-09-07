@@ -31,7 +31,7 @@ reference = [
   "transformers>=4.44",
 ]
 dev = [
-  "mypy>=1.11",
+  "mypy>=2.3.1",
   "ruff>=0.6",
 ]
 
