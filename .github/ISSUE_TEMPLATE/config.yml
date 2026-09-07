@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Question or idea
-    url: https://github.com/NiLabs-Models/conform/discussions
+    url: https://github.com/NiLabs-Org/conform/discussions
     about: Ask about the project or propose something before building it.
   - name: Bug in an inference engine
-    url: https://github.com/NiLabs-Models/conform/issues/new?template=divergence.yml
+    url: https://github.com/NiLabs-Org/conform/issues/new?template=divergence.yml
     about: If two engines disagree, file a divergence report here rather than upstream first.

@@ -29,7 +29,7 @@ Out of scope:
 Please do not open a public issue for a security report.
 
 Use GitHub's [private vulnerability
-reporting](https://github.com/NiLabs-Models/conform/security/advisories/new),
+reporting](https://github.com/NiLabs-Org/conform/security/advisories/new),
 or email **hello@nilabs.dev**.
 
 Include the version or commit, what an attacker can achieve, and a reproduction

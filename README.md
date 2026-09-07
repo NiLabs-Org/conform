@@ -42,7 +42,7 @@ A test is written once and becomes a row for every engine automatically.
 | Chat templates | Same messages render to the same prompt |
 | Structured output | JSON schema constraints produce valid output |
 
-The last three are not implemented yet. See the [issues](https://github.com/NiLabs-Models/conform/issues).
+The last three are not implemented yet. See the [issues](https://github.com/NiLabs-Org/conform/issues).
 
 ## Non-goals
 
@@ -58,7 +58,7 @@ The last three are not implemented yet. See the [issues](https://github.com/NiLa
 Requires Python 3.11+.
 
 ```bash
-git clone https://github.com/NiLabs-Models/conform
+git clone https://github.com/NiLabs-Org/conform
 cd conform
 python -m venv .venv && .venv/bin/activate      # Windows: .venv\Scripts\activate
 pip install -e ".[reference,dev]"
@@ -115,7 +115,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Found two engines that disagree? That is the most valuable thing you can
 contribute. Open a
-[divergence report](https://github.com/NiLabs-Models/conform/issues/new?template=divergence.yml)
+[divergence report](https://github.com/NiLabs-Org/conform/issues/new?template=divergence.yml)
 with the request, both outputs, and the versions.
 
 ## License

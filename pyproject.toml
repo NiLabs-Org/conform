@@ -39,8 +39,8 @@ dev = [
 conform = "conform.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/NiLabs-Models/conform"
-Issues = "https://github.com/NiLabs-Models/conform/issues"
+Homepage = "https://github.com/NiLabs-Org/conform"
+Issues = "https://github.com/NiLabs-Org/conform/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/conform"]

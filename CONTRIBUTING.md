@@ -9,7 +9,7 @@ have a test yet. Everything else is plumbing.
 Python 3.11 or newer.
 
 ```bash
-git clone https://github.com/NiLabs-Models/conform
+git clone https://github.com/NiLabs-Org/conform
 cd conform
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
