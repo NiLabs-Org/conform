@@ -113,7 +113,7 @@ jobs:
         continue-on-error: true
         run: conform run --out results
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: conformance-matrix
           path: results/
