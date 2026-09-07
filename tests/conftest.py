@@ -7,12 +7,13 @@ and becomes a row in the matrix automatically.
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 
 import pytest
 
 from conform.adapters.base import Engine
 from conform.registry import EngineSpec, build, load_specs
+from conform.report import DIVERGENCES
 from conform.types import Capability, CompletionRequest, EngineError
 
 
@@ -93,3 +94,19 @@ def _honour_requires(request: pytest.FixtureRequest) -> None:
     for capability in marker.args:
         if not engine.supports(Capability(capability)):
             pytest.skip(f"{engine.name} does not support {Capability(capability).value}")
+
+
+@pytest.fixture
+def record_divergence(request: pytest.FixtureRequest) -> Callable[[str], None]:
+    """Record what an engine did, without calling it right or wrong.
+
+    For tier-3 behaviour (see docs/spec.md), where the API genuinely does not
+    specify an answer. The row reports ``note`` and carries the observed
+    behaviour, so the matrix shows the disagreement without the project
+    pretending to arbitrate it.
+    """
+
+    def _record(observed: str) -> None:
+        DIVERGENCES[request.node.nodeid] = observed
+
+    return _record

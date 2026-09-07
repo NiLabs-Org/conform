@@ -7,10 +7,12 @@ handled differently, swapping engines silently changes your output.
 
 from __future__ import annotations
 
+from collections.abc import Callable
+
 import pytest
 
 from conform.adapters.base import Engine
-from conform.types import CompletionRequest
+from conform.types import CompletionRequest, EngineError
 
 PROMPT = "The capital of France is"
 
@@ -118,11 +120,19 @@ def test_truncation_sets_finish_reason_length(engine: Engine) -> None:
     assert result.finish_reason == "length"
 
 
-def test_zero_max_tokens_generates_nothing(engine: Engine) -> None:
-    """Asking for zero tokens should produce empty text, not an error.
+def test_zero_max_tokens_behaviour(
+    engine: Engine, record_divergence: Callable[[str], None]
+) -> None:
+    """What ``max_tokens=0`` means is unspecified. Tier 3 in docs/spec.md.
 
-    Engines disagree here more than you would expect: some 400, some return
-    one token anyway.
+    Engines variously return empty text, reject the request, or generate one
+    token anyway. The OpenAI API does not say which is right, so this records
+    the behaviour rather than asserting one. Reported as ``note``.
     """
-    result = engine.complete(CompletionRequest(prompt=PROMPT, max_tokens=0, temperature=0.0))
-    assert result.text == ""
+    try:
+        result = engine.complete(CompletionRequest(prompt=PROMPT, max_tokens=0, temperature=0.0))
+    except EngineError as exc:
+        record_divergence(f"rejects the request: {str(exc)[:120]}")
+        return
+
+    record_divergence(f"returns {result.text[:60]!r} (finish_reason={result.finish_reason!r})")

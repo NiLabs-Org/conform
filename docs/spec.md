@@ -54,6 +54,33 @@ Divergences are arguably the most valuable output of the project. A `FAIL` tells
 one team to fix something. A divergence tells the whole ecosystem that a
 behaviour needs specifying.
 
+Tier 3 tests do not assert. They take the `record_divergence` fixture, call the
+engine, and record what happened:
+
+```python
+def test_zero_max_tokens_behaviour(engine, record_divergence) -> None:
+    """Unspecified: record the behaviour, do not judge it."""
+    try:
+        result = engine.complete(CompletionRequest(prompt=PROMPT, max_tokens=0))
+    except EngineError as exc:
+        record_divergence(f"rejects the request: {exc}")
+        return
+    record_divergence(f"returns {result.text!r}")
+```
+
+Those rows show `note` in the matrix, and `matrix.json` carries the observed
+behaviour for each engine.
+
+## Reading the matrix
+
+| Cell | Meaning |
+| --- | --- |
+| `pass` | Behaved as tier 1 or tier 2 requires |
+| `FAIL` | Did not. This is a bug in the engine |
+| `note` | Tier 3. What it did is recorded in `matrix.json`, with no judgement |
+| `skip` | Feature not supported, or engine unreachable. Not a finding |
+| `ERR` | The engine errored or was unreachable mid-run. An environment problem |
+
 ## The reference implementation
 
 `ReferenceEngine` runs the model through HuggingFace transformers, on CPU, in

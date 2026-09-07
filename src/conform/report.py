@@ -20,7 +20,18 @@ import pytest
 
 from conform.types import EngineError
 
-SYMBOLS = {"pass": "pass", "fail": "FAIL", "skip": "skip", "error": "ERR"}
+SYMBOLS = {
+    "pass": "pass",
+    "fail": "FAIL",
+    "skip": "skip",
+    "error": "ERR",
+    "diverge": "note",
+}
+
+#: nodeid -> observed behaviour, filled by the ``record_divergence`` fixture.
+#: Tier-3 behaviour (see docs/spec.md) is recorded, never judged, so these
+#: rows report what an engine did instead of whether it was right.
+DIVERGENCES: dict[str, str] = {}
 
 
 @dataclass
@@ -119,7 +130,10 @@ class MatrixPlugin:
         if report.when == "setup" and report.skipped:
             self.matrix.record(test, engine, Outcome("skip", _reason(report)))
         elif report.when == "call":
-            if report.passed:
+            observed = DIVERGENCES.get(report.nodeid)
+            if observed is not None:
+                self.matrix.record(test, engine, Outcome("diverge", observed))
+            elif report.passed:
                 self.matrix.record(test, engine, Outcome("pass"))
             elif report.skipped:
                 self.matrix.record(test, engine, Outcome("skip", _reason(report)))
